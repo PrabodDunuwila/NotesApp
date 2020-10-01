@@ -1,8 +1,5 @@
 package com.example.notesapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,10 +10,12 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import java.util.Calendar;
 
 public class Edit extends AppCompatActivity {
-
     Toolbar toolbar;
     EditText noteTitle, noteDetails;
     Calendar calendar;
@@ -29,21 +28,17 @@ public class Edit extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-
         Intent i = getIntent();
         long id = i.getLongExtra("ID", 0);
         db = new NotesDatabase(this);
         note = db.getNote(id);
-
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(note.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         noteTitle = findViewById(R.id.noteTitle);
         noteDetails = findViewById(R.id.noteDetails);
-
         noteTitle.setText(note.getTitle());
         noteDetails.setText(note.getContent());
 
@@ -73,8 +68,8 @@ public class Edit extends AppCompatActivity {
                 + pad(calendar.get(Calendar.SECOND));
     }
 
-    private String pad(int time){
-        if(time < 10){
+    private String pad(int time) {
+        if (time < 10) {
             return "0" + time;
         }
         return String.valueOf(time);
@@ -83,32 +78,31 @@ public class Edit extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflator = getMenuInflater();
-        inflator.inflate(R.menu.save_menu,menu);
+        inflator.inflate(R.menu.save_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.save){
+        if (item.getItemId() == R.id.save) {
             note.setTitle(noteTitle.getText().toString());
             note.setContent(noteDetails.getText().toString());
             int id = db.editNote(note);
-            if(id == note.getId()){
+            if (id == note.getId()) {
                 Toast.makeText(this, "Note updated.", Toast.LENGTH_SHORT).show();
-            }else{
+            } else {
                 Toast.makeText(this, "Error updating.", Toast.LENGTH_SHORT).show();
-
             }
             goToMain();
         }
-        if(item.getItemId() == R.id.delete){
+        if (item.getItemId() == R.id.delete) {
             Toast.makeText(this, "Deleted note.", Toast.LENGTH_SHORT).show();
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void goToMain(){
+    private void goToMain() {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +16,6 @@ import androidx.appcompat.widget.Toolbar;
 import java.util.Calendar;
 
 public class AddNote extends AppCompatActivity {
-
     Toolbar toolbar;
     EditText noteTitle, noteDetails;
     Calendar calendar;

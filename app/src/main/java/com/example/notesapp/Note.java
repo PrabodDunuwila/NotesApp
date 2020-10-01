@@ -1,25 +1,24 @@
 package com.example.notesapp;
 
 public class Note {
-
     private long id;
     private String title;
     private String content;
     private String date;
     private String time;
 
-    Note(){
+    Note() {
         //
     }
 
-    Note(String title, String content, String date, String time){
+    Note(String title, String content, String date, String time) {
         this.title = title;
         this.content = content;
         this.date = date;
         this.time = time;
     }
 
-    Note(long id, String title, String content, String date, String time){
+    Note(long id, String title, String content, String date, String time) {
         this.id = id;
         this.title = title;
         this.content = content;

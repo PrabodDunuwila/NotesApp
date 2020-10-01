@@ -16,7 +16,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class Details extends AppCompatActivity {
-
     TextView mDetails;
     NotesDatabase db;
     Note note;
@@ -27,12 +26,9 @@ public class Details extends AppCompatActivity {
         setContentView(R.layout.activity_details);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         mDetails = findViewById(R.id.detailsOfNote);
-
         Intent i = getIntent();
         long id = i.getLongExtra("ID", 0);
-
         db = new NotesDatabase(this);
         note = db.getNote(id);
         getSupportActionBar().setTitle(note.getTitle());
@@ -61,7 +57,6 @@ public class Details extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.editNote) {
-            // send user to edit activity
             Toast.makeText(this, "Edit note", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(this, Edit.class);
             i.putExtra("ID", note.getId());
