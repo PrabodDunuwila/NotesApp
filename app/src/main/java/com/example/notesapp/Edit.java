@@ -1,41 +1,51 @@
 package com.example.notesapp;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import java.util.Calendar;
 
-public class AddNote extends AppCompatActivity {
+public class Edit extends AppCompatActivity {
 
     Toolbar toolbar;
     EditText noteTitle, noteDetails;
     Calendar calendar;
     String todayDate;
     String currentTime;
+    NotesDatabase db;
+    Note note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_note);
+        setContentView(R.layout.activity_edit);
+
+        Intent i = getIntent();
+        long id = i.getLongExtra("ID", 0);
+        db = new NotesDatabase(this);
+        note = db.getNote(id);
+
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("New Note");
+        getSupportActionBar().setTitle(note.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         noteTitle = findViewById(R.id.noteTitle);
         noteDetails = findViewById(R.id.noteDetails);
+
+        noteTitle.setText(note.getTitle());
+        noteDetails.setText(note.getContent());
 
         noteTitle.addTextChangedListener(new TextWatcher() {
             @Override
@@ -57,17 +67,17 @@ public class AddNote extends AppCompatActivity {
         });
 
         calendar = Calendar.getInstance();
-        todayDate = calendar.get(Calendar.YEAR) + "/" + pad(calendar.get(Calendar.MONTH) + 1) + "/"
-                + pad(calendar.get(Calendar.DAY_OF_MONTH));
+        todayDate = calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/"
+                + calendar.get(Calendar.DAY_OF_MONTH);
         currentTime = pad(calendar.get(Calendar.HOUR)) + ":" + pad(calendar.get(Calendar.MINUTE)) + ":"
                 + pad(calendar.get(Calendar.SECOND));
     }
 
-    private String pad(int value){
-        if(value < 10){
-            return "0" + value;
+    private String pad(int time){
+        if(time < 10){
+            return "0" + time;
         }
-        return String.valueOf(value);
+        return String.valueOf(time);
     }
 
     @Override
@@ -80,11 +90,15 @@ public class AddNote extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.save){
-            Note note = new Note(noteTitle.getText().toString(), noteDetails.getText().toString(),
-                    todayDate, currentTime);
-            NotesDatabase db = new NotesDatabase(this);
-            db.addNote(note);
-            Toast.makeText(this, "Saved new note.", Toast.LENGTH_SHORT).show();
+            note.setTitle(noteTitle.getText().toString());
+            note.setContent(noteDetails.getText().toString());
+            int id = db.editNote(note);
+            if(id == note.getId()){
+                Toast.makeText(this, "Note updated.", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "Error updating.", Toast.LENGTH_SHORT).show();
+
+            }
             goToMain();
         }
         if(item.getItemId() == R.id.delete){
