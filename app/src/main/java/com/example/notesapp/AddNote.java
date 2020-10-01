@@ -72,7 +72,7 @@ public class AddNote extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.save){
+        if(item.getItemId() == R.id.add){
             Note note = new Note(noteTitle.getText().toString(), noteDetails.getText().toString(),
                     todayDate, currentTime);
             NotesDatabase db = new NotesDatabase(this);
