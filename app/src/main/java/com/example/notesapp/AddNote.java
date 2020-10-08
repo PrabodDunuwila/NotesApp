@@ -86,7 +86,7 @@ public class AddNote extends AppCompatActivity {
             goToMain();
         }
         if(item.getItemId() == R.id.delete){
-            Toast.makeText(this, "Deleted note.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Note not saved.", Toast.LENGTH_SHORT).show();
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);

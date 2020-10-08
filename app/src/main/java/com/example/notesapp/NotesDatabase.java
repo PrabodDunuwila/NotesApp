@@ -93,13 +93,13 @@ public class NotesDatabase extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int editNote(Note note) {
+    public void editNote(Note note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_TITLE, note.getTitle());
         values.put(KEY_CONTENT, note.getContent());
         values.put(KEY_DATE, note.getDate());
         values.put(KEY_TIME, note.getTime());
-        return db.update(DATABASE_TABLE, values, KEY_ID + " = ?", new String[]{String.valueOf(note.getId())});
+        db.update(DATABASE_TABLE, values, KEY_ID + " = ?", new String[]{String.valueOf(note.getId())});
     }
 }

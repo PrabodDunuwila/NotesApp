@@ -40,7 +40,8 @@ public class Details extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 db.deleteNote(note.getId());
-                Toast.makeText(getApplicationContext(), "Note deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Note deleted", Toast.LENGTH_SHORT)
+                        .show();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
@@ -56,6 +57,10 @@ public class Details extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
         if (item.getItemId() == R.id.editNote) {
             Toast.makeText(this, "Edit note", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(this, Edit.class);

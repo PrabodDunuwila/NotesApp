@@ -14,10 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 public class Edit extends AppCompatActivity {
     Toolbar toolbar;
     EditText noteTitle, noteDetails;
+    long noteId;
     Calendar calendar;
     String todayDate;
     String currentTime;
@@ -28,15 +30,16 @@ public class Edit extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-        Intent i = getIntent();
-        long id = i.getLongExtra("ID", 0);
-        db = new NotesDatabase(this);
-        note = db.getNote(id);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(note.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Intent i = getIntent();
+        noteId = i.getLongExtra("ID", 0);
+        db = new NotesDatabase(this);
+        note = db.getNote(noteId);
+
         noteTitle = findViewById(R.id.noteTitle);
         noteDetails = findViewById(R.id.noteDetails);
         noteTitle.setText(note.getTitle());
@@ -45,7 +48,7 @@ public class Edit extends AppCompatActivity {
         noteTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                getSupportActionBar().setTitle(note.getTitle());
             }
 
             @Override
@@ -64,8 +67,8 @@ public class Edit extends AppCompatActivity {
         calendar = Calendar.getInstance();
         todayDate = calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/"
                 + calendar.get(Calendar.DAY_OF_MONTH);
-        currentTime = pad(calendar.get(Calendar.HOUR)) + ":" + pad(calendar.get(Calendar.MINUTE)) + ":"
-                + pad(calendar.get(Calendar.SECOND));
+        currentTime = pad(calendar.get(Calendar.HOUR)) + ":" + pad(calendar.get(Calendar.MINUTE))
+                + ":" + pad(calendar.get(Calendar.SECOND));
     }
 
     private String pad(int time) {
@@ -84,19 +87,18 @@ public class Edit extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.save) {
-            note.setTitle(noteTitle.getText().toString());
-            note.setContent(noteDetails.getText().toString());
-            int id = db.editNote(note);
-            if (id == note.getId()) {
-                Toast.makeText(this, "Note updated.", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Error updating.", Toast.LENGTH_SHORT).show();
-            }
-            goToMain();
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
         }
-        if (item.getItemId() == R.id.delete) {
-            Toast.makeText(this, "Deleted note.", Toast.LENGTH_SHORT).show();
+        if (item.getItemId() == R.id.save) {
+            Note note = new Note(noteId, noteTitle.getText().toString(),
+                    noteDetails.getText().toString(), todayDate, currentTime);
+            db.editNote(note);
+            Toast.makeText(this, "Note updated.", Toast.LENGTH_SHORT).show();
+            goToMain();
+        } else if (item.getItemId() == R.id.delete) {
+            Toast.makeText(this, "Cancel edit.", Toast.LENGTH_SHORT).show();
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
